@@ -34,3 +34,39 @@ export async function registerUser(data: RegisterUserData) {
 
   return user;
 }
+
+import jwt from "jsonwebtoken";
+
+export interface LoginUserData {
+  email: string;
+  password: string;
+}
+
+/**
+ * Verifies user credentials and returns a signed JWT when valid.
+ *
+ * @param data - Login credentials.
+ * @returns The signed JWT.
+ * @throws Error when the email doesn't exist or the password doesn't match.
+ */
+export async function loginUser(data: LoginUserData) {
+  const user = await findUserByEmail(data.email);
+
+  if (!user) {
+    throw new Error("Invalid credentials");
+  }
+
+  const isPasswordValid = await bcrypt.compare(data.password, user.password);
+
+  if (!isPasswordValid) {
+    throw new Error("Invalid credentials");
+  }
+
+  const token = jwt.sign(
+    { userId: user.id, email: user.email },
+    process.env.JWT_SECRET as string,
+    { expiresIn: "1h" }
+  );
+
+  return token;
+}
