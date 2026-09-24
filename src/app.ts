@@ -4,10 +4,13 @@ import { pool } from "./persistence/database";
 import authRoutes from "./api/routes/auth.routes";
 import taskRoutes from "./api/routes/task.routes";
 import { errorHandler } from "./api/middlewares/error.middleware";
+import swaggerUi from "swagger-ui-express";
+import { swaggerSpec } from "./config/swagger";
 
 const app = express();
 
 app.use(express.json());
+app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 app.use("/auth", authRoutes);
 app.use("/tasks", taskRoutes);
 app.use(errorHandler);
