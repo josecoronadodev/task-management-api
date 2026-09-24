@@ -1,3 +1,5 @@
+import { NotFoundError, ValidationError } from "../utils/errors";
+
 import {
   createTask,
   findTasksByUserId,
@@ -33,7 +35,7 @@ export interface UpdateTaskInput {
  */
 export async function createTaskForUser(userId: number, data: CreateTaskInput) {
   if (data.status && !VALID_STATUSES.includes(data.status)) {
-    throw new Error("Invalid status value");
+    throw new ValidationError("Invalid status value");
   }
 
   const taskData: CreateTaskData = {
@@ -69,7 +71,7 @@ export async function getTaskForUser(id: number, userId: number) {
   const task = await findTaskByIdAndUserId(id, userId);
 
   if (!task) {
-    throw new Error("Task not found");
+    throw new NotFoundError("Task not found");
   }
 
   return task;
@@ -87,7 +89,7 @@ export async function getTaskForUser(id: number, userId: number) {
  */
 export async function updateTaskForUser(id: number, userId: number, data: UpdateTaskInput) {
   if (data.status && !VALID_STATUSES.includes(data.status)) {
-    throw new Error("Invalid status value");
+    throw new NotFoundError("Task not found");
   }
 
   const updateData: UpdateTaskData = {
@@ -100,7 +102,7 @@ export async function updateTaskForUser(id: number, userId: number, data: Update
   const task = await updateTask(id, userId, updateData);
 
   if (!task) {
-    throw new Error("Task not found");
+    throw new NotFoundError("Task not found");
   }
 
   return task;
@@ -117,6 +119,6 @@ export async function deleteTaskForUser(id: number, userId: number) {
   const deleted = await deleteTask(id, userId);
 
   if (!deleted) {
-    throw new Error("Task not found");
+   throw new NotFoundError("Task not found");
   }
 }

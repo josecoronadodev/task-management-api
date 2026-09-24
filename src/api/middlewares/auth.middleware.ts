@@ -1,5 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 import jwt from "jsonwebtoken";
+import { AuthenticationError } from "../../utils/errors";
 
 export interface AuthenticatedRequest extends Request {
   userId?: number;
@@ -21,7 +22,7 @@ export function authenticate(
   const authHeader = req.headers.authorization;
 
   if (!authHeader || !authHeader.startsWith("Bearer ")) {
-    return res.status(401).json({ message: "No token provided" });
+    return next(new AuthenticationError("No token provided"));
   }
 
   const token = authHeader.split(" ")[1];
@@ -35,6 +36,6 @@ export function authenticate(
     req.userId = decoded.userId;
     next();
   } catch (error) {
-    return res.status(401).json({ message: "Invalid or expired token" });
+    return next (new AuthenticationError ("invalid or expired token"));
   }
 }

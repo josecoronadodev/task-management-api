@@ -1,4 +1,5 @@
 import bcrypt from "bcrypt";
+import { ConflictError, AuthenticationError } from "../utils/errors";
 import {
   createUser,
   findUserByEmail,
@@ -53,13 +54,14 @@ export async function loginUser(data: LoginUserData) {
   const user = await findUserByEmail(data.email);
 
   if (!user) {
-    throw new Error("Invalid credentials");
+  throw new AuthenticationError("Invalid credentials");
   }
+  
 
   const isPasswordValid = await bcrypt.compare(data.password, user.password);
 
   if (!isPasswordValid) {
-    throw new Error("Invalid credentials");
+    throw new AuthenticationError("Invalid credentials");
   }
 
   const token = jwt.sign(
