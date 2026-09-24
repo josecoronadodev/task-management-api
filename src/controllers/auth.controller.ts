@@ -1,5 +1,5 @@
-import { Request, Response, NextFunction } from "express";
-import { registerUser } from "../services/auth.service";
+import type { Request, Response, NextFunction } from "express";
+import { registerUser, loginUser } from "../services/auth.service";
 
 /**
  * Handles user registration requests.
@@ -30,8 +30,6 @@ export async function register(
     next(error);
   }
 }
-
-import { registerUser, loginUser } from "../services/auth.service";
 
 /**
  * Handles user login requests.
